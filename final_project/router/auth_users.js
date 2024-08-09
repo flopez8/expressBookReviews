@@ -51,12 +51,36 @@ regd_users.put("/auth/review/:isbn/:review", (req, res) => {
     if (!book)
         res.status(400).json({message: 'Invalid ISBN'})
 
+    let {accessToken, username} = req.session.authorization
     const review = {
-        username : jwt.decode(),
+        username : username,
         message: message
     }
 
-  return res.status(300).json({message: "Yet to be implemented"});
+    if (!book.reviews) 
+        book.reviews = {}
+    
+    book.reviews[`${username}`] = review.message
+
+    //books[isbn].review[username] = review
+
+  return res.send(`Review added successfully. Message: ${review.message}`);
+});
+
+// Delete a book review
+regd_users.delete("/auth/review/:isbn", (req, res) => {
+    const isbn = req.params.isbn
+
+    const book = books[isbn]
+
+    if (!book)
+        res.status(400).json({message: 'Invalid ISBN'})
+
+    let {accessToken, username} = req.session.authorization
+
+    delete book.reviews[`${username}`]
+
+  return res.send(`Review of user ${username} was deleted successfully`);
 });
 
 module.exports.authenticated = regd_users;
