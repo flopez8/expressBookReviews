@@ -29,7 +29,7 @@ else {
 }
 });
  
-const PORT =5000;
+const PORT =9999;
 
 app.use("/customer", customer_routes);
 app.use("/", genl_routes);
